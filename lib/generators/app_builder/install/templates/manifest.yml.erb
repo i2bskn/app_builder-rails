@@ -17,6 +17,7 @@ commands:
     - cd <%= remote_app_home %>/current && bundle install --deployment --without development test --path <%= remote_app_home %>/shared/bundle
     - echo 'deploy done'
   success:
+    - cd <%= remote_app_home %>/releases && ls -1 | sort --reverse | tail -n +<%= keep_release + 1 %> | xargs rm -rf
     - echo 'deploy success'
   failure:
     - echo 'deploy failed!!'
