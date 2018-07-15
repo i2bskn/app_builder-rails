@@ -1,0 +1,5 @@
+Description:
+    Setup AppBuilder for Rails
+
+Example:
+    rails generate app_builder:install
