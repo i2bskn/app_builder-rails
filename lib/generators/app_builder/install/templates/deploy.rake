@@ -1,8 +1,12 @@
 namespace :deploy do
+  def deploy_path
+    File.expand_path("../../config/deploy", __dir__)
+  end
+
   def build_env
     @build_env ||= AppBuilder::Environment.new(
       ENV.fetch("BILD_ENV", "develop"),
-      File.expand_path("../../config/deploy/environment.yml", __dir__),
+      File.join(deploy_path, "environment.yml"),
     )
   end
 
@@ -15,6 +19,7 @@ namespace :deploy do
       resource_user:          build_env[:resource_user],
       resource_ssh_options:   build_env[:resource_ssh_options].symbolize_keys,
       resource_document_root: build_env[:resource_document_root],
+      manifest_template_path: File.join(deploy_path, "templates", "manifest.yml.erb"),
     )
   end
 
