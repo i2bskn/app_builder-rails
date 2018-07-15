@@ -1,30 +1,39 @@
 namespace :deploy do
-  def deploy_path
-    File.expand_path("../../config/deploy", __dir__)
-  end
-
-  def build_env
-    @build_env ||= AppBuilder::Environment.new(
-      ENV.fetch("BILD_ENV", "develop"),
-      File.join(deploy_path, "environment.yml"),
+  def config
+    env_name = ENV.fetch("BILD_ENV", "develop")
+    env = AppBuilder::Environment.new(
+      env_name,
+      File.expand_path("../../config/deploy/environment.yml", __dir__)
     )
-  end
-
-  def build_config
-    @build_config ||= AppBuilder::Config.new(
-      resource_type:          build_env[:resource_type],
-      upload_id:              build_env[:upload_id],
-      remote_app_home_base:   build_env[:remote_app_home_base],
-      resource_host:          build_env[:resource_host],
-      resource_user:          build_env[:resource_user],
-      resource_ssh_options:   build_env[:resource_ssh_options].symbolize_keys,
-      resource_document_root: build_env[:resource_document_root],
-      manifest_template_path: File.join(deploy_path, "templates", "manifest.yml.erb"),
+    config = AppBuilder::Config.new(
+      resource_type:          env[:resource_type],
+      upload_id:              env[:upload_id],
+      remote_app_home_base:   env[:remote_app_home_base],
+      resource_host:          env[:resource_host],
+      resource_user:          env[:resource_user],
+      resource_ssh_options:   env[:resource_ssh_options].symbolize_keys,
+      resource_document_root: env[:resource_document_root],
     )
+
+    env = AppBuilder::Environment.new(
+      env_name,
+      File.join(config.archive_path, "config", "deploy", "environment.yml"),
+    )
+    config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
+    config.after_archive = [
+      proc {
+        env.create_file(
+          File.join(config.archive_path, "config", "deploy", "templates", "database.yml.erb"),
+          File.join(config.archive_path, "config", "database.yml"),
+        )
+      },
+    ]
+
+    config
   end
 
   desc "Upload builded source and stretcher manifest file."
   task :upload do
-    AppBuilder::Uploader.upload(build_config)
+    AppBuilder::Uploader.upload(config)
   end
 end

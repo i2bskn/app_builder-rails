@@ -1,21 +1,30 @@
 namespace :deploy do
-  def deploy_path
-    File.expand_path("../../config/deploy", __dir__)
-  end
-
-  def build_env
-    @build_env ||= AppBuilder::Environment.new(
-      ENV.fetch("BILD_ENV", "develop"),
-      File.join(deploy_path, "environment.yml"),
-    )
-  end
-
   def build_config
-    @build_config ||= AppBuilder::Config.new(
-      upload_id:            build_env[:upload_id],
-      remote_app_home_base: build_env[:remote_app_home_base],
-      manifest_template_path: File.join(deploy_path, "templates", "manifest.yml.erb"),
+    env_name = ENV.fetch("BILD_ENV", "develop")
+    env = AppBuilder::Environment.new(
+      env_name,
+      File.expand_path("../../config/deploy/environment.yml", __dir__)
     )
+    config = AppBuilder::Config.new(
+      upload_id:              env[:upload_id],
+      remote_app_home_base:   env[:remote_app_home_base],
+    )
+
+    env = AppBuilder::Environment.new(
+      env_name,
+      File.join(config.archive_path, "config", "deploy", "environment.yml"),
+    )
+    config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
+    config.after_archive = [
+      proc {
+        env.create_file(
+          File.join(config.archive_path, "config", "deploy", "templates", "database.yml.erb"),
+          File.join(config.archive_path, "config", "database.yml"),
+        )
+      },
+    ]
+
+    config
   end
 
   desc "Upload builded source and stretcher manifest file."
