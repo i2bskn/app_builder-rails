@@ -12,7 +12,7 @@ namespace :deploy do
 
   def build_config
     @build_config ||= AppBuilder::Config.new(
-      upload_type:            build_env[:upload_type],
+      resource_type:          build_env[:resource_type],
       upload_id:              build_env[:upload_id],
       remote_app_home_base:   build_env[:remote_app_home_base],
       resource_host:          build_env[:resource_host],

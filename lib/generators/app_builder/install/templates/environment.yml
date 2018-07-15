@@ -1,5 +1,5 @@
 default: &default
-  upload_type: "http"
+  resource_type: "http"
   upload_id: "resource.example.com"
   remote_app_home_base: "/srv/www"
   resource_host: "resource.example.com"
