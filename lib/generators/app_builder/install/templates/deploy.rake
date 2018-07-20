@@ -1,10 +1,6 @@
 namespace :deploy do
   def config
-    env_name = ENV.fetch("BILD_ENV", "develop")
-    env = AppBuilder::Environment.new(
-      env_name,
-      File.expand_path("../../config/deploy/environment.yml", __dir__)
-    )
+    env = AppBuilder::Environment.new("config/deploy/environment.yml")
     config = AppBuilder::Config.new(
       resource_type:          env[:resource_type],
       upload_id:              env[:upload_id],
@@ -15,10 +11,6 @@ namespace :deploy do
       resource_document_root: env[:resource_document_root],
     )
 
-    env = AppBuilder::Environment.new(
-      env_name,
-      File.join(config.archive_path, "config", "deploy", "environment.yml"),
-    )
     config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
     config.after_archive = [
       proc {

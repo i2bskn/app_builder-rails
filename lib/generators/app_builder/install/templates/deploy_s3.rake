@@ -1,19 +1,11 @@
 namespace :deploy do
   def build_config
-    env_name = ENV.fetch("BILD_ENV", "develop")
-    env = AppBuilder::Environment.new(
-      env_name,
-      File.expand_path("../../config/deploy/environment.yml", __dir__)
-    )
+    env = AppBuilder::Environment.new("config/deploy/environment.yml")
     config = AppBuilder::Config.new(
       upload_id:              env[:upload_id],
       remote_app_home_base:   env[:remote_app_home_base],
     )
 
-    env = AppBuilder::Environment.new(
-      env_name,
-      File.join(config.archive_path, "config", "deploy", "environment.yml"),
-    )
     config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
     config.after_archive = [
       proc {
