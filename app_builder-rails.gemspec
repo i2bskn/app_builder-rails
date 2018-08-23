@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["i2bskn"]
   spec.email         = ["i2bskn@gmail.com"]
 
-  spec.summary       = %q{AppBuilder for Rails.}
-  spec.description   = %q{AppBuilder for Rails.}
+  spec.summary       = %q{Generate application to be deployed and upload to s3 (or deploy server).}
+  spec.description   = %q{Generate application to be deployed and upload to s3 (or deploy server).}
   spec.homepage      = "https://github.com/i2bskn/app_builder-rails"
   spec.license       = "MIT"
 

@@ -1,18 +1,18 @@
 default: &default
   resource_type: "http"
-  upload_id: "resource.example.com"
-  remote_app_home_base: "/srv/www"
-  resource_host: "resource.example.com"
+  upload_id: "source.example.com"
+  remote_app_home_base: "/var/www"
+  resource_host: "source.example.com"
   resource_user: "centos"
   resource_ssh_options:
     port: 22
     keys: <%= File.expand_path("~/.ssh/id_rsa") %>
-  resource_document_root: "/srv/www/resource/public"
+  resource_document_root: "/var/www/source/public"
 
 develop:
   <<: *default
-  upload_id: "dev-resource.exampl.com"
-  resource_host: "dev-resource.example.com"
+  upload_id: "dev-source.exampl.com"
+  resource_host: "dev-source.example.com"
 
 production:
   <<: *default

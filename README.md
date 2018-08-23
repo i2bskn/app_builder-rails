@@ -1,28 +1,49 @@
 # AppBuilder::Rails
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/app_builder/rails`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Generate application to be deployed and upload to s3 (or deploy server).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'app_builder-rails'
+gem "app_builder-rails"
 ```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle install
+$ bundle exec rails generate app_builder:install
+```
 
-Or install it yourself as:
+Adds following files:
 
-    $ gem install app_builder-rails
+- `config/deploy/environment.yml`
+- `config/deploy/templates/manifest.yml.erb`
+- `lib/tasks/deploy.rake`
 
 ## Usage
 
-TODO: Write usage instructions here
+Build source and upload to S3:
+
+```
+$ APP_ENV=develop TARGET_BRANCH=develop bundle exec rails deploy:prepare
+INFO    2018-01-01 12:00:00.000000  9999    Execute command [local]: mkdir -p /var/tmp/project /var/tmp/project/archive/20180101120000 /var/tmp/project/build/20180101120000
+INFO    2018-01-01 12:00:00.000000  9999    Execute command [local]: git remote update (with: {:chdir=>"/var/tmp/project/repo"})
+INFO    2018-01-01 12:00:00.000000  9999    Execute command [local]: git archive develop | tar -x -C /var/tmp/project/archive/20180101120000 (with: {:chdir=>"/var/tmp/project/repo"})
+INFO    2018-01-01 12:00:00.000000  9999    Create revision: {"branch"=>"develop", "revision"=>"0123456789abcdef0123456789abcdef0123456"}
+INFO    2018-01-01 12:00:00.000000  9999    Execute command [local]: tar zcf /var/tmp/project/build/20180101120000/20180101120000.tar.gz . (with: {:chdir=>"/var/tmp/project/archive/20180101120000"})
+INFO    2018-01-01 12:00:00.000000  9999    Uploaded /var/tmp/project/build/20180101120000/20180101120000.tar.gz to s3://dev-source-example-com/assets/20180101120000.tar.gz
+INFO    2018-01-01 12:00:00.000000  9999    Uploaded /var/tmp/project/build/20180101120000/20180101120000.yml to s3://dev-source-example-com/manifests/20180101120000.yml
+```
+
+And then deploy with stretcher in target server:
+
+```
+$ ssh target-server
+$ echo s3://dev-source-example-com/manifests/20180101120000.yml | stretcher
+```
 
 ## Development
 
@@ -32,7 +53,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/app_builder-rails.
+Bug reports and pull requests are welcome on GitHub at https://github.com/i2bskn/app_builder-rails.
 
 ## License
 

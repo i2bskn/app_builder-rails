@@ -1,10 +1,10 @@
 default: &default
-  upload_id: "resource-example-com"
-  remote_app_home_base: "/srv/www"
+  upload_id: "source-example-com"
+  remote_app_home_base: "/var/www"
 
 develop:
   <<: *default
-  upload_id: "dev-resource-example-com"
+  upload_id: "dev-source-example-com"
 
 production:
   <<: *default
