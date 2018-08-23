@@ -21,7 +21,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "app_builder"
+  spec.add_dependency "app_builder", "0.2.9"
+  spec.add_dependency "vars", "0.0.4"
   spec.add_dependency "railties"
 
   spec.add_development_dependency "bundler", "~> 1.16"
