@@ -7,7 +7,7 @@ namespace :deploy do
   end
 
   def deploy_config
-    env = AppBuilder::Environment.new("config/deploy/environment.yml")
+    env = Vars.new(path: "config/deploy/environment.yml", source_type: :git)
     config = AppBuilder::Config.new(**deploy_params(env))
 
     config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
