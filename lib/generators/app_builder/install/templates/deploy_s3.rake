@@ -1,10 +1,14 @@
 namespace :deploy do
+  def deploy_params(env)
+    {
+      upload_id:            env.upload_id,
+      remote_app_home_base: env.remote_app_home_base
+    }
+  end
+
   def deploy_config
     env = AppBuilder::Environment.new("config/deploy/environment.yml")
-    config = AppBuilder::Config.new(
-      upload_id:            env.upload_id,
-      remote_app_home_base: env.remote_app_home_base,
-    )
+    config = AppBuilder::Config.new(**deploy_params(env))
 
     config.manifest_template_path = File.join(config.archive_path, "config", "deploy", "templates", "manifest.yml.erb")
     config.after_archive = [
@@ -12,9 +16,9 @@ namespace :deploy do
         env.resolve_templates(
           File.join(config.archive_path, "config", "deploy", "templates"),
           File.join(config.archive_path, "config"),
-          excludes: ["manifest.yml"],
+          excludes: ["manifest.yml"]
         )
-      },
+      }
     ]
 
     config
