@@ -1,18 +1,28 @@
 default: &default
   resource_type: "http"
-  upload_id: "source.example.com"
+  upload_id: "dev-source.exampl.com"
   remote_app_home_base: "/var/www"
-  resource_host: "source.example.com"
+  resource_host: "dev-source.example.com"
   resource_user: "centos"
   resource_ssh_options:
     port: 22
     keys: <%= File.expand_path("~/.ssh/id_rsa") %>
   resource_document_root: "/var/www/source/public"
+  rails_env: "development"
+  db_host: "localhost"
+  db_user: "root"
+  db_password:
+  master_key: <%= ENV.fetch("RAILS_MASTER_KEY") %>
 
 develop:
   <<: *default
-  upload_id: "dev-source.exampl.com"
-  resource_host: "dev-source.example.com"
+
+staging:
+  <<: *default
+  upload_id: "example-com-staging-source"
+  rails_env: "staging"
 
 production:
   <<: *default
+  upload_id: "example-com-production-source"
+  rails_env: "production"

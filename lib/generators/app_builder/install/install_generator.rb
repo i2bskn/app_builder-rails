@@ -10,7 +10,7 @@ module AppBuilder::Generators
     end
 
     def create_manifest_yaml_erb
-      copy_file "manifest.yml.erb", File.join(deploy_path, "templates", "manifest.yml.erb")
+      copy_file "manifest.yml.erb", File.join(deploy_path, "manifest.yml.erb")
     end
 
     def create_deploy_tasks

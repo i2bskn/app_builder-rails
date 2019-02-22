@@ -17,6 +17,8 @@ commands:
     - ln -nfs <%= remote_app_home %>/shared/pids <%= remote_app_home %>/current/tmp/pids
     - ln -nfs <%= remote_app_home %>/shared/sockets <%= remote_app_home %>/current/tmp/sockets
     - cd <%= remote_app_home %>/current && bundle install --deployment --without development test --path <%= remote_app_home %>/shared/bundle
+    - cd <%= remote_app_home %>/current && RAILS_ENV=<%= optional_parameter.rails_env %> RAILS_MASTER_KEY=<%= optional_parameter.master_key %> bundle exec rails assets:precompile
+    - cd <%= remote_app_home %>/current && RAILS_ENV=<%= optional_parameter.rails_env %> RAILS_MASTER_KEY=<%= optional_parameter.master_key %> bundle exec rails deploy:after_initialize
     - echo 'deploy done'
   success:
     - cd <%= remote_app_home %>/releases && ls -1 | sort --reverse | tail -n +<%= keep_release + 1 %> | xargs rm -rf
